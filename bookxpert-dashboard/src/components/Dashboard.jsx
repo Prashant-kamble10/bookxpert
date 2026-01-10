@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Table from "./Table";
 import { data } from "../Data/MockData";
 
-const Dashboard = () => {
+const Dashboard = ({ onLogout }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -26,8 +26,11 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-white">Dashboard</h1>
           <p className="text-lg text-blue-100 mt-2">Total Employees: <span className="font-semibold">{totalCount}</span></p>
         </div>
-        <div className="text-right">
-          <p className="text-lg text-green-200">Active Employees: <span className="font-semibold">{activeCount}</span></p>
+        <div className="text-right flex items-center gap-4">
+          <div>
+            <p className="text-lg text-green-200">Active Employees: <span className="font-semibold">{activeCount}</span></p>
+          </div>
+          <button className="btn btn-error btn-outline" onClick={onLogout}>Logout</button>
         </div>
       </div>
       <div className="flex gap-4 mb-6">
