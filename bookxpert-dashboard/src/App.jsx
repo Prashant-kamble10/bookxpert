@@ -1,9 +1,13 @@
 import "./App.css";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+
 
 function App() {
   return (
     <>
-      <h1 class="bg-red-200 text-3xl font-bold underline">Hello world!</h1>
+        {/* <Login /> */}
+        <Dashboard />
     </>
   );
 }
