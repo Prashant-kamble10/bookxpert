@@ -1,23 +1,37 @@
 import React from 'react'
 import { data } from '../Data/MockData'
+import '../styles/print.css'
 
-const Table = ({ employeeData = data }) => {
+const Table = ({ employeeData = data, onDeleteEmployee }) => {
   const handleEdit = (employeeId) => {
     console.log('Edit employee:', employeeId)
   }
 
   const handleDelete = (employeeId) => {
-    console.log('Delete employee:', employeeId)
+    if (window.confirm('Are you sure you want to delete this employee?')) {
+      onDeleteEmployee(employeeId);
+    }
   }
 
-  const handlePrint = (employeeId) => {
-    console.log('Print employee:', employeeId)
+  const handlePrintList = () => {
+    window.print();
   }
+
+
 
   return (
     <div>
+      <div className="mb-4 no-print">
+        <button 
+          className="btn btn-primary"
+          onClick={handlePrintList}
+        >
+          Print Employee List
+        </button>
+      </div>
+
       <div className="overflow-x-auto">
-        <table className="table">
+        <table className="table print-table">
           {/* head */}
           <thead>
             <tr>
@@ -58,7 +72,7 @@ const Table = ({ employeeData = data }) => {
                   </span>
                 </td>
                 <td>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 no-print">
                     <button 
                       className="btn btn-sm btn-info"
                       onClick={() => handleEdit(employee.employeeId)}
@@ -70,12 +84,6 @@ const Table = ({ employeeData = data }) => {
                       onClick={() => handleDelete(employee.employeeId)}
                     >
                       Delete
-                    </button>
-                    <button 
-                      className="btn btn-sm btn-secondary"
-                      onClick={() => handlePrint(employee.employeeId)}
-                    >
-                      Print
                     </button>
                   </div>
                 </td>

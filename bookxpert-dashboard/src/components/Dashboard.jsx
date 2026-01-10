@@ -3,14 +3,20 @@ import Table from "./Table";
 import { data } from "../Data/MockData";
 
 const Dashboard = ({ onLogout }) => {
+  const [employees, setEmployees] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  const totalCount = data.length;
-  const activeCount = data.filter(emp => emp.activeStatus).length;
+  const totalCount = employees.length;
+  const activeCount = employees.filter(emp => emp.activeStatus).length;
 
-  const filteredData = data.filter(emp => {
+  const handleDeleteEmployee = (employeeId) => {
+    const updatedEmployees = employees.filter(emp => emp.employeeId !== employeeId);
+    setEmployees(updatedEmployees);
+  };
+
+  const filteredData = employees.filter(emp => {
     const matchesSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGender = genderFilter === '' || emp.gender === genderFilter;
     const matchesStatus = statusFilter === '' || 
@@ -64,7 +70,7 @@ const Dashboard = ({ onLogout }) => {
         <button className="btn btn-primary">Add Employee</button>
       </div>
 
-      <Table employeeData={filteredData} />
+      <Table employeeData={filteredData} onDeleteEmployee={handleDeleteEmployee} />
     </div>
   )
 }
