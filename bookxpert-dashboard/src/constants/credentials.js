@@ -1,4 +1,3 @@
-// Hardcoded credentials - credentials for authentication
 export const VALID_CREDENTIALS = [
   {
     email: "admin@bookxpert.com",

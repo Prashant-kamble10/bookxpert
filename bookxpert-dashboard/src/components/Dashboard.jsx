@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Table from "./Table";
+import EmployeeForm from "./EmployeeForm";
 import { data } from "../Data/MockData";
 
 const Dashboard = ({ onLogout }) => {
@@ -7,6 +8,7 @@ const Dashboard = ({ onLogout }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
 
   const totalCount = employees.length;
   const activeCount = employees.filter(emp => emp.activeStatus).length;
@@ -14,6 +16,11 @@ const Dashboard = ({ onLogout }) => {
   const handleDeleteEmployee = (employeeId) => {
     const updatedEmployees = employees.filter(emp => emp.employeeId !== employeeId);
     setEmployees(updatedEmployees);
+  };
+
+  const handleAddEmployee = (newEmployee) => {
+    setEmployees(prev => [newEmployee, ...prev]);
+    setShowEmployeeForm(false);
   };
 
   const filteredData = employees.filter(emp => {
@@ -67,10 +74,21 @@ const Dashboard = ({ onLogout }) => {
           <option value="Active">Active</option>
           <option value="Inactive">Inactive</option>
         </select>
-        <button className="btn btn-primary">Add Employee</button>
+        <button 
+          className="btn btn-primary"
+          onClick={() => setShowEmployeeForm(true)}
+        >
+          Add Employee
+        </button>
       </div>
 
       <Table employeeData={filteredData} onDeleteEmployee={handleDeleteEmployee} />
+
+      <EmployeeForm 
+        isOpen={showEmployeeForm}
+        onClose={() => setShowEmployeeForm(false)}
+        onSubmit={handleAddEmployee}
+      />
     </div>
   )
 }
