@@ -9,7 +9,7 @@ const INDIAN_STATES = [
   'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
 ];
 
-const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
+const EmployeeForm = ({ isOpen, onClose, onSubmit, editingEmployee }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     gender: '',
@@ -22,6 +22,22 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
 
   const [errors, setErrors] = useState({});
   const idCounter = useRef(0);
+
+  React.useEffect(() => {
+    if (editingEmployee) {
+      setFormData({
+        fullName: editingEmployee.name || '',
+        gender: editingEmployee.gender || '',
+        state: editingEmployee.state || '',
+        dob: editingEmployee.dob || '',
+        activeStatus: editingEmployee.activeStatus ? 'true' : 'false',
+        image: null,
+        imagePreview: editingEmployee.profileImage || null
+      });
+    } else {
+      resetForm();
+    }
+  }, [editingEmployee]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -49,7 +65,7 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
       }
     }
 
-    if (!formData.image) {
+    if (!editingEmployee && !formData.image) {
       newErrors.image = 'Profile image is required';
     }
 
@@ -100,12 +116,7 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
       return;
     }
 
-    // Generate unique employee ID using a stable counter to avoid impure calls during render
-    idCounter.current += 1;
-    const employeeId = `EMP${String(idCounter.current).padStart(5, '0')}`;
-
-    const newEmployee = {
-      employeeId,
+    const employeeData = {
       name: formData.fullName,
       gender: formData.gender,
       state: formData.state,
@@ -114,7 +125,22 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
       profileImage: formData.imagePreview
     };
 
-    onSubmit(newEmployee);
+    if (editingEmployee) {
+      const updatedEmployee = {
+        ...editingEmployee,
+        ...employeeData
+      };
+      onSubmit(updatedEmployee, true);
+    } else {
+      idCounter.current += 1;
+      const employeeId = `EMP${String(idCounter.current).padStart(5, '0')}`;
+      const newEmployee = {
+        employeeId,
+        ...employeeData
+      };
+      onSubmit(newEmployee, false);
+    }
+    
     resetForm();
   };
 
@@ -142,7 +168,7 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
     <div className="modal modal-open">
       <div className="modal-box w-11/12 max-w-2xl">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg">Add New Employee</h3>
+          <h3 className="font-bold text-lg">{editingEmployee ? 'Edit Employee' : 'Add New Employee'}</h3>
           <button 
             type="button"
             onClick={handleCloseModal}
@@ -292,7 +318,7 @@ const EmployeeForm = ({ isOpen, onClose, onSubmit }) => {
               type="submit"
               className="btn btn-primary"
             >
-              Add Employee
+              {editingEmployee ? 'Update Employee' : 'Add Employee'}
             </button>
           </div>
         </form>

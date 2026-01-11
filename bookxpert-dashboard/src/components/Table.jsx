@@ -2,9 +2,9 @@ import React from 'react'
 import { data } from '../Data/MockData'
 import '../styles/print.css'
 
-const Table = ({ employeeData = data, onDeleteEmployee }) => {
-  const handleEdit = (employeeId) => {
-    console.log('Edit employee:', employeeId)
+const Table = ({ employeeData = data, onDeleteEmployee, onEditEmployee }) => {
+  const handleEdit = (employee) => {
+    onEditEmployee(employee);
   }
 
   const handleDelete = (employeeId) => {
@@ -75,7 +75,7 @@ const Table = ({ employeeData = data, onDeleteEmployee }) => {
                   <div className="flex gap-2 no-print">
                     <button 
                       className="btn btn-sm btn-info"
-                      onClick={() => handleEdit(employee.employeeId)}
+                      onClick={() => handleEdit(employee)}
                     >
                       Edit
                     </button>

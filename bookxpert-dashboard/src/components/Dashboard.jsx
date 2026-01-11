@@ -9,6 +9,7 @@ const Dashboard = ({ onLogout }) => {
   const [genderFilter, setGenderFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
 
   const totalCount = employees.length;
   const activeCount = employees.filter(emp => emp.activeStatus).length;
@@ -18,9 +19,27 @@ const Dashboard = ({ onLogout }) => {
     setEmployees(updatedEmployees);
   };
 
-  const handleAddEmployee = (newEmployee) => {
-    setEmployees(prev => [newEmployee, ...prev]);
+  const handleEditEmployee = (employee) => {
+    setEditingEmployee(employee);
+    setShowEmployeeForm(true);
+  };
+
+  const handleAddOrUpdateEmployee = (employeeData, isEdit) => {
+    if (isEdit) {
+      const updatedEmployees = employees.map(emp => 
+        emp.employeeId === employeeData.employeeId ? employeeData : emp
+      );
+      setEmployees(updatedEmployees);
+      setEditingEmployee(null);
+    } else {
+      setEmployees(prev => [employeeData, ...prev]);
+    }
     setShowEmployeeForm(false);
+  };
+
+  const handleCloseForm = () => {
+    setShowEmployeeForm(false);
+    setEditingEmployee(null);
   };
 
   const filteredData = employees.filter(emp => {
@@ -82,12 +101,13 @@ const Dashboard = ({ onLogout }) => {
         </button>
       </div>
 
-      <Table employeeData={filteredData} onDeleteEmployee={handleDeleteEmployee} />
+      <Table employeeData={filteredData} onDeleteEmployee={handleDeleteEmployee} onEditEmployee={handleEditEmployee} />
 
       <EmployeeForm 
         isOpen={showEmployeeForm}
-        onClose={() => setShowEmployeeForm(false)}
-        onSubmit={handleAddEmployee}
+        onClose={handleCloseForm}
+        onSubmit={handleAddOrUpdateEmployee}
+        editingEmployee={editingEmployee}
       />
     </div>
   )
